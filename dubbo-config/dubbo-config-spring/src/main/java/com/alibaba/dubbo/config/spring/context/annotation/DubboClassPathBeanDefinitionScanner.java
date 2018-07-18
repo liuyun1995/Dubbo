@@ -36,7 +36,6 @@ import static org.springframework.context.annotation.AnnotationConfigUtils.regis
  */
 public class DubboClassPathBeanDefinitionScanner extends ClassPathBeanDefinitionScanner {
 
-
     public DubboClassPathBeanDefinitionScanner(BeanDefinitionRegistry registry, boolean useDefaultFilters, Environment environment,
                                                ResourceLoader resourceLoader) {
 

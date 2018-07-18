@@ -1,19 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.alibaba.dubbo.rpc.cluster.loadbalance;
 
 import com.alibaba.dubbo.common.URL;
@@ -23,12 +7,7 @@ import com.alibaba.dubbo.rpc.Invoker;
 import java.util.List;
 import java.util.Random;
 
-/**
- * random load balance.
- *
- * 随机，按权重设置随机概率。
- * 在一个截面上碰撞的概率高，但调用量越大分布越均匀，而且按概率使用权重后也比较均匀，有利于动态调整提供者权重。
- */
+//随机负载均衡
 public class RandomLoadBalance extends AbstractLoadBalance {
 
     public static final String NAME = "random";

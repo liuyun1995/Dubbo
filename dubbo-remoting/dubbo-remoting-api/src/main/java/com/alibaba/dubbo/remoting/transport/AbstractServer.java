@@ -1,19 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.alibaba.dubbo.remoting.transport;
 
 import com.alibaba.dubbo.common.Constants;
@@ -34,38 +18,18 @@ import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 
-/**
- * AbstractServer
- *
- * Server 抽象类
- */
+//抽象服务端
 public abstract class AbstractServer extends AbstractEndpoint implements Server {
 
     protected static final String SERVER_THREAD_POOL_NAME = "DubboServerHandler";
-
     private static final Logger logger = LoggerFactory.getLogger(AbstractServer.class);
+    ExecutorService executor;                   //线程池
+    private InetSocketAddress localAddress;     //本地地址
+    private InetSocketAddress bindAddress;      //绑定地址
+    private int accepts;                        //最大可接受连接数
+    private int idleTimeout;                    //空闲超时时间
 
-    /**
-     * 线程池
-     */
-    ExecutorService executor;
-    /**
-     * 服务地址
-     */
-    private InetSocketAddress localAddress;
-    /**
-     * 绑定地址
-     */
-    private InetSocketAddress bindAddress;
-    /**
-     * 服务器最大可接受连接数
-     */
-    private int accepts;
-    /**
-     * 空闲超时时间，单位：毫秒
-     */
-    private int idleTimeout; //600 seconds
-
+    //构造器
     public AbstractServer(URL url, ChannelHandler handler) throws RemotingException {
         super(url, handler);
         // 服务地址

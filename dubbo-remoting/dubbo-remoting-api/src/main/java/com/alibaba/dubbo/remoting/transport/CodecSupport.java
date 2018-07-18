@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.alibaba.dubbo.remoting.transport;
 
 import com.alibaba.dubbo.common.Constants;
@@ -29,23 +12,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * 编解码工具类，提供查询 Serialization 的功能
- */
+//编解码工具类
 public class CodecSupport {
 
     private static final Logger logger = LoggerFactory.getLogger(CodecSupport.class);
-
-    /**
-     * 序列化对象集合
-     * key：序列化类型编号 {@link Serialization#getContentTypeId()}
-     */
+    //序列化对象集合
     private static Map<Byte, Serialization> ID_SERIALIZATION_MAP = new HashMap<Byte, Serialization>();
-    /**
-     * 序列化名集合
-     * key：序列化类型编号 {@link Serialization#getContentTypeId()}
-     * value: 序列化拓展名
-     */
+    //序列化名集合
     private static Map<Byte, String> ID_SERIALIZATIONNAME_MAP = new HashMap<Byte, String>();
 
     static {
@@ -66,8 +39,7 @@ public class CodecSupport {
         }
     }
 
-    private CodecSupport() {
-    }
+    private CodecSupport() {}
 
     public static Serialization getSerializationById(Byte id) {
         return ID_SERIALIZATION_MAP.get(id);

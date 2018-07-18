@@ -1,19 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.alibaba.dubbo.container.spring;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -23,54 +7,44 @@ import com.alibaba.dubbo.container.Container;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-/**
- * SpringContainer. (SPI, Singleton, ThreadSafe)
- *
- * Spring 容器实现类
- */
+//Spring容器实现类
 public class SpringContainer implements Container {
 
     private static final Logger logger = LoggerFactory.getLogger(SpringContainer.class);
-
-    /**
-     * Spring 配置属性 KEY
-     */
+    //Spring配置属性
     public static final String SPRING_CONFIG = "dubbo.spring.config";
-    /**
-     * 默认配置文件地址
-     */
+    //默认配置文件地址
     public static final String DEFAULT_SPRING_CONFIG = "classpath*:META-INF/spring/*.xml";
-    /**
-     * Spring Context
-     *
-     * 静态属性，全局唯一
-     */
+    //Spring应用上下文
     static ClassPathXmlApplicationContext context;
 
+    //获取Spring应用上下文
     public static ClassPathXmlApplicationContext getContext() {
         return context;
     }
 
+    //开启应用
     @Override
     public void start() {
-        // 获得 Spring 配置文件的地址
+        //获取Spring配置文件地址
         String configPath = ConfigUtils.getProperty(SPRING_CONFIG);
         if (configPath == null || configPath.length() == 0) {
             configPath = DEFAULT_SPRING_CONFIG;
         }
-        // 创建 Spring Context 对象
+        //创建Spring应用上下文
         context = new ClassPathXmlApplicationContext(configPath.split("[,\\s]+"));
-        // 启动 Spring Context ，会触发 ContextStartedEvent 事件
+        //启动Spring容器
         context.start();
     }
 
+    //停止应用
     @Override
     public void stop() {
         try {
             if (context != null) {
-                // 停止 Spring Context ，会触发 ContextStoppedEvent 事件。
+                //停止Spring容器
                 context.stop();
-                // 关闭 Spring Context ，会触发 ContextClosedEvent 事件。
+                //关闭Spring容器
                 context.close();
                 context = null;
             }

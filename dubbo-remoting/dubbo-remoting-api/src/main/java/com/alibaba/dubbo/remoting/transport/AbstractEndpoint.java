@@ -1,19 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.alibaba.dubbo.remoting.transport;
 
 import com.alibaba.dubbo.common.Constants;
@@ -27,28 +11,15 @@ import com.alibaba.dubbo.remoting.Codec;
 import com.alibaba.dubbo.remoting.Codec2;
 import com.alibaba.dubbo.remoting.transport.codec.CodecAdapter;
 
-/**
- * AbstractEndpoint
- *
- * Endpoint 抽象类
- */
+//抽象终端
 public abstract class AbstractEndpoint extends AbstractPeer implements Resetable {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractEndpoint.class);
+    private Codec2 codec;        //编解码器
+    private int timeout;         //超时时间
+    private int connectTimeout;  //连接超时时间
 
-    /**
-     * 编解码器
-     */
-    private Codec2 codec;
-    /**
-     * 超时时间
-     */
-    private int timeout;
-    /**
-     * 连接超时时间
-     */
-    private int connectTimeout;
-
+    //构造器
     public AbstractEndpoint(URL url, ChannelHandler handler) {
         super(url, handler);
         this.codec = getChannelCodec(url);
@@ -56,12 +27,7 @@ public abstract class AbstractEndpoint extends AbstractPeer implements Resetable
         this.connectTimeout = url.getPositiveParameter(Constants.CONNECT_TIMEOUT_KEY, Constants.DEFAULT_CONNECT_TIMEOUT);
     }
 
-    /**
-     * 获得编解码器
-     *
-     * @param url URL
-     * @return 编解码器
-     */
+    //获得编解码器
     protected static Codec2 getChannelCodec(URL url) {
         String codecName = url.getParameter(Constants.CODEC_KEY, "telnet");
         if (ExtensionLoader.getExtensionLoader(Codec2.class).hasExtension(codecName)) { // 例如，在 DubboProtocol 中，会获得 DubboCodec

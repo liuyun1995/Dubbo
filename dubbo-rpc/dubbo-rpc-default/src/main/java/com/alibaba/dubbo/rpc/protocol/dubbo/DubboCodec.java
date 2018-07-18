@@ -1,19 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.alibaba.dubbo.rpc.protocol.dubbo;
 
 import com.alibaba.dubbo.common.Constants;
@@ -41,44 +25,22 @@ import com.alibaba.dubbo.rpc.RpcInvocation;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * Dubbo codec.
- *
- * Dubbo 编解码器
- */
+//Dubbo编解码器
 public class DubboCodec extends ExchangeCodec implements Codec2 {
-
     private static final Logger log = LoggerFactory.getLogger(DubboCodec.class);
-
-    /**
-     * 协议名
-     */
+    //协议名
     public static final String NAME = "dubbo";
-    /**
-     * 协议版本
-     */
+    //协议版本
     public static final String DUBBO_VERSION = Version.getVersion(DubboCodec.class, Version.getVersion());
-
-    /**
-     * 响应 - 异常
-     */
+    //响应 - 异常
     public static final byte RESPONSE_WITH_EXCEPTION = 0;
-    /**
-     * 响应 - 正常（空返回）
-     */
+    //响应 - 正常（空返回）
     public static final byte RESPONSE_VALUE = 1;
-    /**
-     * 响应 - 正常（有返回）
-     */
+    //响应 - 正常（有返回）
     public static final byte RESPONSE_NULL_VALUE = 2;
-
-    /**
-     * 方法参数 - 空（参数）
-     */
+    //方法参数 - 空（参数）
     public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
-    /**
-     * 方法参数 - 空（类型）
-     */
+    //方法参数 - 空（类型）
     public static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
 
     @Override

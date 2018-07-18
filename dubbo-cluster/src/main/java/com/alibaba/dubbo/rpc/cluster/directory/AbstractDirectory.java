@@ -40,7 +40,6 @@ import java.util.List;
  */
 public abstract class AbstractDirectory<T> implements Directory<T> {
 
-    // logger
     private static final Logger logger = LoggerFactory.getLogger(AbstractDirectory.class);
 
     /**

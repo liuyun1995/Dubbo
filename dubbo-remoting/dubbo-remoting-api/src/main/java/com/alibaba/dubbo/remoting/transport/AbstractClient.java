@@ -1,19 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.alibaba.dubbo.remoting.transport;
 
 import com.alibaba.dubbo.common.Constants;
@@ -43,11 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-/**
- * AbstractClient
- *
- * Client 抽象类，实现了重连逻辑。
- */
+//抽象客户端
 public abstract class AbstractClient extends AbstractEndpoint implements Client {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractClient.class);
@@ -83,24 +63,13 @@ public abstract class AbstractClient extends AbstractEndpoint implements Client 
      */
     // reconnect warning period. Reconnect warning interval (log warning after how many times) //for test
     private final int reconnect_warning_period;
-    /**
-     * 关闭超时时间
-     */
+    //关闭超时时间
     private final long shutdown_timeout;
-    /**
-     * 线程池
-     *
-     * 在调用 {@link #wrapChannelHandler(URL, ChannelHandler)} 时，会调用 {@link com.alibaba.dubbo.remoting.transport.dispatcher.WrappedChannelHandler} 创建
-     */
+    //线程池
     protected volatile ExecutorService executor;
-    /**
-     * 重连执行任务 Future
-     */
+    //重连执行任务
     private volatile ScheduledFuture<?> reconnectExecutorFuture = null;
-    /**
-     * 最后成功连接时间
-     */
-    // the last successed connected time
+    //最后成功连接时间
     private long lastConnectedTime = System.currentTimeMillis();
 
     public AbstractClient(URL url, ChannelHandler handler) throws RemotingException {
@@ -123,7 +92,6 @@ public abstract class AbstractClient extends AbstractEndpoint implements Client 
 
         // 连接服务器
         try {
-            // connect.
             connect();
             if (logger.isInfoEnabled()) {
                 logger.info("Start " + getClass().getSimpleName() + " " + NetUtils.getLocalAddress() + " connect to the server " + getRemoteAddress());
@@ -150,13 +118,7 @@ public abstract class AbstractClient extends AbstractEndpoint implements Client 
                 .remove(Constants.CONSUMER_SIDE, Integer.toString(url.getPort()));
     }
 
-    /**
-     * 包装通道处理器
-     *
-     * @param url URL
-     * @param handler 被包装的通道处理器
-     * @return 包装后的通道处理器
-     */
+    //包装通道处理器
     protected static ChannelHandler wrapChannelHandler(URL url, ChannelHandler handler) {
         // 设置线程名
         url = ExecutorUtil.setThreadName(url, CLIENT_THREAD_POOL_NAME);
@@ -192,11 +154,7 @@ public abstract class AbstractClient extends AbstractEndpoint implements Client 
         return reconnect;
     }
 
-    /**
-     * init reconnect thread
-     *
-     * 初始化重连线程
-     */
+    //初始化重连线程
     private synchronized void initConnectStatusCheckCommand() {
         //reconnect=false to close reconnect
         // 获得获得重连频率，默认开启。
@@ -237,9 +195,7 @@ public abstract class AbstractClient extends AbstractEndpoint implements Client 
         }
     }
 
-    /**
-     * 关闭重连线程
-     */
+    //关闭重连线程
     private synchronized void destroyConnectStatusCheckCommand() {
         try {
             // 关闭重连线程
@@ -254,15 +210,17 @@ public abstract class AbstractClient extends AbstractEndpoint implements Client 
         }
     }
 
-    // 未调用
+    //创建执行器
     protected ExecutorService createExecutor() {
         return Executors.newCachedThreadPool(new NamedThreadFactory(CLIENT_THREAD_POOL_NAME + CLIENT_THREAD_POOL_ID.incrementAndGet() + "-" + getUrl().getAddress(), true));
     }
 
+    //获取连接地址
     public InetSocketAddress getConnectAddress() {
         return new InetSocketAddress(NetUtils.filterLocalHost(getUrl().getHost()), getUrl().getPort());
     }
 
+    //获取远程地址
     @Override
     public InetSocketAddress getRemoteAddress() {
         Channel channel = getChannel();
@@ -271,6 +229,7 @@ public abstract class AbstractClient extends AbstractEndpoint implements Client 
         return channel.getRemoteAddress();
     }
 
+    //获取本地地址
     @Override
     public InetSocketAddress getLocalAddress() {
         Channel channel = getChannel();
@@ -315,26 +274,27 @@ public abstract class AbstractClient extends AbstractEndpoint implements Client 
         return channel != null && channel.hasAttribute(key);
     }
 
+    //发送消息
     @Override
     public void send(Object message, boolean sent) throws RemotingException {
-        // 未连接时，开启重连功能，则先发起连接
+        //未连接时，开启重连功能，则先发起连接
         if (send_reconnect && !isConnected()) {
             connect();
         }
-        // 发送消息
+        //获取通信通道
         Channel channel = getChannel();
-        //TODO Can the value returned by getChannel() be null? need improvement.
         if (channel == null || !channel.isConnected()) {
             throw new RemotingException(this, "message can not send, because channel is closed . url:" + getUrl());
         }
+        //发送消息
         channel.send(message, sent);
     }
 
+    //连接服务端
     protected void connect() throws RemotingException {
-        // 获得锁
         connectLock.lock();
         try {
-            // 已连接，
+            //已连接，
             if (isConnected()) {
                 return;
             }
@@ -371,13 +331,12 @@ public abstract class AbstractClient extends AbstractEndpoint implements Client 
         }
     }
 
+    //断开服务端
     public void disconnect() {
-        // 获得锁
         connectLock.lock();
         try {
-            //
             destroyConnectStatusCheckCommand();
-            // 关闭连接
+            //关闭连接
             try {
                 Channel channel = getChannel();
                 if (channel != null) {
@@ -386,29 +345,30 @@ public abstract class AbstractClient extends AbstractEndpoint implements Client 
             } catch (Throwable e) {
                 logger.warn(e.getMessage(), e);
             }
-            // 执行关闭
+            //执行关闭
             try {
                 doDisConnect();
             } catch (Throwable e) {
                 logger.warn(e.getMessage(), e);
             }
         } finally {
-            // 释放锁
             connectLock.unlock();
         }
     }
 
+    //重新连接
     @Override
     public void reconnect() throws RemotingException {
-        // 断开连接
+        //断开连接
         disconnect();
-        // 发起连接
+        //发起连接
         connect();
     }
 
+    //关闭客户端
     @Override
     public void close() {
-        // 关闭线程池
+        //关闭线程池
         try {
             if (executor != null) {
                 ExecutorUtil.shutdownNow(executor, 100);
@@ -416,19 +376,19 @@ public abstract class AbstractClient extends AbstractEndpoint implements Client 
         } catch (Throwable e) {
             logger.warn(e.getMessage(), e);
         }
-        // 标记关闭
+        //标记关闭
         try {
             super.close();
         } catch (Throwable e) {
             logger.warn(e.getMessage(), e);
         }
-        // 断开连接
+        //断开连接
         try {
             disconnect();
         } catch (Throwable e) {
             logger.warn(e.getMessage(), e);
         }
-        // 执行子类关闭
+        //执行子类关闭
         try {
             doClose();
         } catch (Throwable e) {
@@ -447,39 +407,19 @@ public abstract class AbstractClient extends AbstractEndpoint implements Client 
         return getClass().getName() + " [" + getLocalAddress() + " -> " + getRemoteAddress() + "]";
     }
 
-    /**
-     * Open client.
-     *
-     * @throws Throwable
-     */
+    //打开客户端
     protected abstract void doOpen() throws Throwable;
 
-    /**
-     * Close client.
-     *
-     * @throws Throwable
-     */
+    //关闭客户端
     protected abstract void doClose() throws Throwable;
 
-    /**
-     * Connect to server.
-     *
-     * @throws Throwable
-     */
+    //连接服务端
     protected abstract void doConnect() throws Throwable;
 
-    /**
-     * disConnect to server.
-     *
-     * @throws Throwable
-     */
+    //断开服务端
     protected abstract void doDisConnect() throws Throwable;
 
-    /**
-     * Get the connected channel.
-     *
-     * @return channel
-     */
+    //获取通道
     protected abstract Channel getChannel();
 
 }

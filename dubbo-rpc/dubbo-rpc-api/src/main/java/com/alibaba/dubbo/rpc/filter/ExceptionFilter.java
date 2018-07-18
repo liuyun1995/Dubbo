@@ -1,19 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.alibaba.dubbo.rpc.filter;
 
 import com.alibaba.dubbo.common.Constants;
@@ -33,35 +17,7 @@ import com.alibaba.dubbo.rpc.service.GenericService;
 
 import java.lang.reflect.Method;
 
-/**
- * ExceptionInvokerFilter
- * <p>
- * Functions:
- * <ol>
- * <li>unexpected exception will be logged in ERROR level on provider side. Unexpected exception are unchecked
- * exception not declared on the interface</li>
- * <li>Wrap the exception not introduced in API package into RuntimeException. Framework will serialize the outer exception but stringnize its cause in order to avoid of possible serialization problem on client side</li>
- * </ol>
- */
-
-/**
- * ExceptionInvokerFilter
- *
- * 异常过滤器
- *
- * <p>
- * 功能：
- * <ol>
- * <li>不期望的异常打ERROR日志（Provider端）<br>
- * 不期望的日志即是，没有的接口上声明的Unchecked异常。
- * <li>异常不在API包中，则Wrap一层RuntimeException。<br>
- * RPC对于第一层异常会直接序列化传输(Cause异常会String化)，避免异常在Client出不能反序列化问题。
- * </ol>
- *
- * @author william.liangf
- * @author ding.lid
- *
- */
+//异常过滤器
 @Activate(group = Constants.PROVIDER)
 public class ExceptionFilter implements Filter {
 
@@ -128,7 +84,6 @@ public class ExceptionFilter implements Filter {
                     if (exception instanceof RpcException) {
                         return result;
                     }
-
                     // 否则，包装成RuntimeException抛给客户端
                     // otherwise, wrap with RuntimeException and throw back to the client
                     return new RpcResult(new RuntimeException(StringUtils.toString(exception)));
